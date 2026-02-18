@@ -49,43 +49,31 @@ function scrollToTop() {
 
 
 
-// companies
-const selectedCompanies = ref<string[]>([]);
+// company
+const selectedCompany = ref<string | null>(null)
 
 // toggle company
 const toggleCompany = (name: string) => {
-    if (selectedCompanies.value.includes(name)) {
-        selectedCompanies.value = selectedCompanies.value.filter(c => c !== name);
-    } else {
-        selectedCompanies.value.push(name);
-    }
+    selectedCompany.value = selectedCompany.value === name ? null : name
 }
 
-// types
-const selectedTypes = ref<string[]>([]);
+// type
+const selectedType = ref<string | null>(null)
 // toggle type
 const toggleType = (name: string) => {
-    if (selectedTypes.value.includes(name)) {
-        selectedTypes.value = selectedTypes.value.filter(c => c !== name);
-    } else {
-        selectedTypes.value.push(name);
-    }
+    selectedType.value = selectedType.value === name ? null : name
 }
 
-const selectedBrands = ref<string[]>([]);
+const selectedBrandName = ref<string | null>(null)
 
 const toggleBrand = (name: string) => {
-    if (selectedBrands.value.includes(name)) {
-        selectedBrands.value = selectedBrands.value.filter(b => b !== name);
-    } else {
-        selectedBrands.value.push(name);
-    }
+    selectedBrandName.value = selectedBrandName.value === name ? null : name
 }
 
 const selectedBrand = ref<typeof brands[number] | null>(null);
 
 // выбранные модели
-const selectedModels = ref<string[]>([]);
+const selectedModel = ref<string | null>(null)
 
 function openBrandSection() {
     activeSection.value = 'brand';
@@ -110,18 +98,8 @@ function openModelSection(brand: typeof brands[number]) {
 }
 
 function toggleModel(model: { name: string, brandName: string }) {
-    // добавляем бренд, если ещё нет
-    if (!selectedBrands.value.includes(model.brandName)) {
-        selectedBrands.value.push(model.brandName)
-    }
-
-    // переключаем модель
-    const idx = selectedModels.value.indexOf(model.name)
-    if (idx !== -1) {
-        selectedModels.value.splice(idx, 1)
-    } else {
-        selectedModels.value.push(model.name)
-    }
+    selectedBrandName.value = model.brandName
+    selectedModel.value = selectedModel.value === model.name ? null : model.name
 }
 
 
@@ -148,28 +126,28 @@ function onBrandClick(brand: any) {
     }
 }
 
-const selectedBrandsWithModelsDetailed = computed(() => {
-    return selectedBrands.value.map(brandName => {
-        const brand = brands.find(b => b.name === brandName)
-        if (!brand) return { brandName, modelsCount: 0 } // <-- теперь объект всегда
+// const selectedBrandsWithModelsDetailed = computed(() => {
+//     return selectedBrands.value.map(brandName => {
+//         const brand = brands.find(b => b.name === brandName)
+//         if (!brand) return { brandName, modelsCount: 0 } // <-- теперь объект всегда
 
-        const modelsOfBrand = selectedModels.value.filter(modelName =>
-            brand.models.some(m => m.name === modelName)
-        )
+//         const modelsOfBrand = selectedModels.value.filter(modelName =>
+//             brand.models.some(m => m.name === modelName)
+//         )
 
-        return { brandName, modelsCount: modelsOfBrand.length }
-    })
-})
+//         return { brandName, modelsCount: modelsOfBrand.length }
+//     })
+// })
 
-const displayedBrandsCompact = computed(() => {
-    const maxVisible = 3; // сколько брендов показывать явно
-    const totalBrands = selectedBrandsWithModelsDetailed.value.length;
+// const displayedBrandsCompact = computed(() => {
+//     const maxVisible = 3; // сколько брендов показывать явно
+//     const totalBrands = selectedBrandsWithModelsDetailed.value.length;
 
-    const visibleBrands = selectedBrandsWithModelsDetailed.value.slice(0, maxVisible);
-    const hiddenCount = totalBrands - maxVisible;
+//     const visibleBrands = selectedBrandsWithModelsDetailed.value.slice(0, maxVisible);
+//     const hiddenCount = totalBrands - maxVisible;
 
-    return { visibleBrands, hiddenCount: hiddenCount > 0 ? hiddenCount : 0 };
-});
+//     return { visibleBrands, hiddenCount: hiddenCount > 0 ? hiddenCount : 0 };
+// });
 
 
 type MobileSection = 'company' | 'brand' | 'type' | 'main';
@@ -194,41 +172,41 @@ function openSectionSmart(section: MobileSection) {
 
 const isMobile = computed(() => width.value < 768)
 
-function toggleAllModelsOfBrand(brand: typeof brands[number]) {
-    const allModelsSelected = brand.models.every(model =>
-        selectedModels.value.includes(model.name)
-    )
+// function toggleAllModelsOfBrand(brand: typeof brands[number]) {
+//     const allModelsSelected = brand.models.every(model =>
+//         selectedModels.value.includes(model.name)
+//     )
 
-    if (allModelsSelected) {
-        // снять все модели бренда
-        selectedModels.value = selectedModels.value.filter(
-            modelName => !brand.models.some(m => m.name === modelName)
-        )
-        // если больше нет выбранных моделей этого бренда — удалить бренд
-        if (!selectedModels.value.some(modelName =>
-            brand.models.some(m => m.name === modelName)
-        )) {
-            selectedBrands.value = selectedBrands.value.filter(b => b !== brand.name)
-        }
-    } else {
-        // добавить все модели бренда
-        brand.models.forEach(model => {
-            if (!selectedModels.value.includes(model.name)) {
-                selectedModels.value.push(model.name)
-            }
-        })
-        // добавить бренд, если ещё нет
-        if (!selectedBrands.value.includes(brand.name)) {
-            selectedBrands.value.push(brand.name)
-        }
-    }
-}
+//     if (allModelsSelected) {
+//         // снять все модели бренда
+//         selectedModels.value = selectedModels.value.filter(
+//             modelName => !brand.models.some(m => m.name === modelName)
+//         )
+//         // если больше нет выбранных моделей этого бренда — удалить бренд
+//         if (!selectedModels.value.some(modelName =>
+//             brand.models.some(m => m.name === modelName)
+//         )) {
+//             selectedBrands.value = selectedBrands.value.filter(b => b !== brand.name)
+//         }
+//     } else {
+//         // добавить все модели бренда
+//         brand.models.forEach(model => {
+//             if (!selectedModels.value.includes(model.name)) {
+//                 selectedModels.value.push(model.name)
+//             }
+//         })
+//         // добавить бренд, если ещё нет
+//         if (!selectedBrands.value.includes(brand.name)) {
+//             selectedBrands.value.push(brand.name)
+//         }
+//     }
+// }
 
-const allModelsSelected = (brand: any) => {
-    return brand.models.every((model: any) =>
-        selectedModels.value.includes(model.name)
-    )
-}
+// const allModelsSelected = (brand: any) => {
+//     return brand.models.every((model: any) =>
+//         selectedModels.value.includes(model.name)
+//     )
+// }
 
 </script>
 
@@ -262,19 +240,17 @@ const allModelsSelected = (brand: any) => {
                                                 : '-rotate-90'" />
                                     </span>
                                     <span class="text-lg hidden md:block">
-                                        <template v-if="selectedCompanies.length">
+                                        <template v-if="selectedCompany">
                                             <p class="text-sm text-gray-500 md:hidden">Компания</p>
-                                            {{ selectedCompanies.slice(0, 2).join(', ') }}
-                                            <span v-if="selectedCompanies.length > 2" class="text-sm text-gray-500">
-                                                , +{{ selectedCompanies.length - 2 }} ещё
-                                            </span>
+                                            {{ selectedCompany }}
+
                                         </template>
                                         <template v-else>
                                             Компания
                                         </template>
                                     </span>
-                                    <span class="shrink-0 hidden md:block" v-if="selectedCompanies.length"
-                                        @click.stop="selectedCompanies.length = 0">
+                                    <span class="shrink-0 hidden md:block" v-if="selectedCompany"
+                                        @click.stop="selectedCompany = null">
                                         <img src="~/assets/img/close-filter.svg" alt="Close Filter Icon">
                                     </span>
                                     <span class="w-6 h-6  items-center justify-center hidden md:flex" v-else
@@ -296,8 +272,8 @@ const allModelsSelected = (brand: any) => {
                                                 <span class="text-lg"> {{ company.name }} </span>
                                                 <span
                                                     class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                                    :class="selectedCompanies.includes(company.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                                    <img v-if="selectedCompanies.includes(company.name)"
+                                                    :class="selectedCompany === company.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                                    <img v-if="selectedCompany === company.name"
                                                         src="~/assets/img/check.svg" alt="Check Icon" class="">
                                                 </span>
                                             </div>
@@ -328,33 +304,28 @@ const allModelsSelected = (brand: any) => {
                                     <span class="text-lg hidden md:block">
                                         <p class="text-sm text-gray-500 md:hidden">Марка, модель</p>
 
-                                        <template v-if="selectedBrands.length || selectedModels.length">
-                                            <template v-for="(item, index) in displayedBrandsCompact.visibleBrands"
-                                                :key="item.brandName">
-                                                {{ item.brandName }}
-                                                <span v-if="item.modelsCount > 0" class="text-gray-400 text-[12px]">
-                                                    +{{ item.modelsCount }} {{ item.modelsCount === 1 ? 'модель' :
-                                                        'модели' }}
-                                                </span>
-                                                <span v-if="index < displayedBrandsCompact.visibleBrands.length - 1">,
-                                                </span>
-                                            </template>
+                                        <template v-if="selectedBrandName || selectedModel">
+                                            <span v-if="selectedBrandName">
+                                                {{ selectedBrandName + ' ' }}
+                                            </span>
 
-                                            <span v-if="displayedBrandsCompact.hiddenCount > 0"
-                                                class="text-gray-400 text-[12px]">
-                                                +{{ displayedBrandsCompact.hiddenCount }} ещё
+                                            <span v-if="selectedBrandName && selectedModel"> </span>
+
+                                            <span v-if="selectedModel" class="text-gray-500">
+                                                {{ selectedModel }}
                                             </span>
                                         </template>
+
                                         <template v-else>
                                             Марка, модель
                                         </template>
                                     </span>
 
 
-                                    <span v-if="selectedBrands.length || selectedModels.length"
-                                        class="shrink-0 hidden md:block" @click.stop="
-                                            selectedBrands.length = 0;
-                                        selectedModels.length = 0;
+                                    <span v-if="selectedBrandName || selectedModel" class="shrink-0 hidden md:block"
+                                        @click.stop="
+                                            selectedBrandName = null;
+                                        selectedModel = null;
                                         ">
                                         <img src="~/assets/img/close-filter.svg" alt="Close Filter Icon" />
                                     </span>
@@ -381,8 +352,8 @@ const allModelsSelected = (brand: any) => {
                                             <div class="flex items-center gap-x-2">
                                                 <span
                                                     class="w-6 h-6 shrink-0 hidden md:flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                                    :class="selectedBrands.includes(brand.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                                    <img v-if="selectedBrands.includes(brand.name)"
+                                                    :class="selectedBrandName === brand.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                                    <img v-if="selectedBrandName === brand.name"
                                                         src="~/assets/img/check.svg" alt="Check Icon" class="">
                                                 </span>
                                                 <span>
@@ -418,14 +389,14 @@ const allModelsSelected = (brand: any) => {
                                                                     @click="toggleModel({ name: model.name, brandName: brand.name })">
                                                                     <div class="flex items-center gap-x-2">
                                                                         <span class="text-base">{{ model.name
-                                                                            }}</span>
+                                                                        }}</span>
                                                                     </div>
                                                                     <span
                                                                         class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                                                        :class="selectedModels.includes(model.name)
+                                                                        :class="selectedModel === model.name
                                                                             ? 'bg-black border-black'
                                                                             : 'bg-white border-[#CACACA]'">
-                                                                        <img v-if="selectedModels.includes(model.name)"
+                                                                        <img v-if="selectedModel === model.name"
                                                                             src="~/assets/img/check.svg"
                                                                             alt="Check Icon" />
                                                                     </span>
@@ -461,18 +432,16 @@ const allModelsSelected = (brand: any) => {
                                                 : '-rotate-90'" />
                                     </span>
                                     <span class="text-lg hidden md:block">
-                                        <template v-if="selectedTypes.length">
-                                            {{ selectedTypes.slice(0, 2).join(', ') }}
-                                            <span v-if="selectedTypes.length > 2" class="text-sm text-gray-500">
-                                                , +{{ selectedTypes.length - 2 }} ещё
-                                            </span>
+                                        <template v-if="selectedType">
+                                            {{ selectedType }}
+
                                         </template>
                                         <template v-else>
                                             Тип байка
                                         </template>
                                     </span>
-                                    <span class="shrink-0 hidden md:block" v-if="selectedTypes.length"
-                                        @click.stop="selectedTypes.length = 0">
+                                    <span class="shrink-0 hidden md:block" v-if="selectedType"
+                                        @click.stop="selectedType = null">
                                         <img src="~/assets/img/close-filter.svg" alt="Close Filter Icon">
                                     </span>
                                     <span class="w-6 h-6  items-center justify-center hidden md:flex" v-else
@@ -494,9 +463,9 @@ const allModelsSelected = (brand: any) => {
                                                 <span class="text-lg"> {{ type.name }} </span>
                                                 <span
                                                     class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                                    :class="selectedTypes.includes(type.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                                    <img v-if="selectedTypes.includes(type.name)"
-                                                        src="~/assets/img/check.svg" alt="Check Icon" class="">
+                                                    :class="selectedType === type.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                                    <img v-if="selectedType === type.name" src="~/assets/img/check.svg"
+                                                        alt="Check Icon" class="">
                                                 </span>
                                             </div>
                                         </div>
@@ -602,8 +571,8 @@ const allModelsSelected = (brand: any) => {
                                 <span class="text-lg"> {{ company.name }} </span>
                                 <span
                                     class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                    :class="selectedCompanies.includes(company.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                    <img v-if="selectedCompanies.includes(company.name)" src="~/assets/img/check.svg"
+                                    :class="selectedCompany === company.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                    <img v-if="selectedCompany === company.name" src="~/assets/img/check.svg"
                                         alt="Check Icon" class="">
                                 </span>
                             </div>
@@ -640,9 +609,9 @@ const allModelsSelected = (brand: any) => {
                                 <span class="text-lg"> {{ type.name }} </span>
                                 <span
                                     class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                    :class="selectedTypes.includes(type.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                    <img v-if="selectedTypes.includes(type.name)" src="~/assets/img/check.svg"
-                                        alt="Check Icon" class="">
+                                    :class="selectedType === type.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                    <img v-if="selectedType === type.name" src="~/assets/img/check.svg" alt="Check Icon"
+                                        class="">
                                 </span>
                             </div>
                         </div>
@@ -674,14 +643,14 @@ const allModelsSelected = (brand: any) => {
                     <div class="grid md:grid-cols-3 gap-x-8 gap-y-4 companies-grid">
                         <div v-for="brand in brands" :key="brand.id">
                             <div class="flex items-center justify-between cursor-pointer pb-4 md:pb-0 border-b md:border-none border-[#d1d5db]"
-                                @click="onBrandClick(brand)">
+                                @click.stop="openModelSection(brand)">
                                 <div class="flex items-center gap-x-2">
-                                    <span
+                                    <!-- <span
                                         class="w-6 h-6 shrink-0 hidden md:flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                        :class="selectedBrands.includes(brand.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                        <img v-if="selectedBrands.includes(brand.name)" src="~/assets/img/check.svg"
+                                        :class="selectedBrandName === brand.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                        <img v-if="selectedBrandName === brand.name" src="~/assets/img/check.svg"
                                             alt="Check Icon" class="">
-                                    </span>
+                                    </span> -->
                                     <span>
                                         <img :src="brand.icon" :alt="brand.name"
                                             class="w-5 h-5 flex flex-1 object-contain" />
@@ -705,13 +674,9 @@ const allModelsSelected = (brand: any) => {
                                 <div v-show="openedMobileBrandIDs.includes(brand.id)"
                                     class="block mt-4 pl-4  md:hidden overflow-hidden">
                                     <div>
-                                        <span class="pb-4 mb-4 block border-gray-400 border-b" @click="
-                                            activeSection = 'main';
-                                        toggleBrand(brand.name);
-                                        ">Выбрать все</span>
+
                                         <div>
-                                            <p class="text-gray-400 mb-4 block">Популярные модели
-                                            </p>
+
                                             <div class="flex flex-col gap-y-4">
                                                 <div v-for="model in brand.models" :key="model.id"
                                                     class="cursor-pointer pb-4 border-gray-400 border-b">
@@ -722,10 +687,10 @@ const allModelsSelected = (brand: any) => {
                                                         </div>
                                                         <span
                                                             class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                                            :class="selectedModels.includes(model.name)
+                                                            :class="selectedModel === model.name
                                                                 ? 'bg-black border-black'
                                                                 : 'bg-white border-[#CACACA]'">
-                                                            <img v-if="selectedModels.includes(model.name)"
+                                                            <img v-if="selectedModel === model.name"
                                                                 src="~/assets/img/check.svg" alt="Check Icon" />
                                                         </span>
                                                     </div>
@@ -775,8 +740,8 @@ const allModelsSelected = (brand: any) => {
                                 </div>
                                 <span
                                     class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                                    :class="selectedModels.includes(model.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                    <img v-if="selectedModels.includes(model.name)" src="~/assets/img/check.svg"
+                                    :class="selectedModel === model.name ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
+                                    <img v-if="selectedModel === model.name" src="~/assets/img/check.svg"
                                         alt="Check Icon" class="">
                                 </span>
                             </div>

@@ -408,21 +408,9 @@ const allModelsSelected = (brand: any) => {
                                             <div v-show="openedMobileBrandIDs.includes(brand.id)"
                                                 class="block mt-4 pl-4  md:hidden overflow-hidden">
                                                 <div class="">
-                                                    <span
-                                                        class="pb-4 mb-4 flex items-center justify-between border-gray-400 border-b"
-                                                        @click="toggleAllModelsOfBrand(brand)">
-                                                        <span>Выбрать все</span>
 
-                                                        <span
-                                                            class="w-6 h-6 shrink-0 flex items-center justify-center border border-[#CACACA] rounded-lg"
-                                                            :class="allModelsSelected(brand) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                                                            <img v-if="allModelsSelected(brand)"
-                                                                src="~/assets/img/check.svg" alt="Check Icon" />
-                                                        </span>
-                                                    </span>
                                                     <div>
-                                                        <p class="text-gray-400 mb-4 block">Популярные модели
-                                                        </p>
+
                                                         <div class="flex flex-col gap-y-4">
                                                             <div v-for="model in brand.models" :key="model.id"
                                                                 class="cursor-pointer pb-4 border-gray-400 border-b">
@@ -430,7 +418,7 @@ const allModelsSelected = (brand: any) => {
                                                                     @click="toggleModel({ name: model.name, brandName: brand.name })">
                                                                     <div class="flex items-center gap-x-2">
                                                                         <span class="text-base">{{ model.name
-                                                                        }}</span>
+                                                                            }}</span>
                                                                     </div>
                                                                     <span
                                                                         class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"

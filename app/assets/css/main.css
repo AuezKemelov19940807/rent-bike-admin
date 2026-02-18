@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+    --color-gray: #C9C9C9;
+    --color-dark-gray: #383838;
+    --color-black: #101010;
+   --shadow-card: 0px 1px 3px 0px #0000004D,
+                 0px 4px 8px 3px #00000026;
+}
+
+body,
+html,
+#__nuxt
+{
+    scroll-behavior: smooth !important;
+    font-family: "Montserrat", sans-serif ;
+    @apply h-full bg-white text-black;
+}
+
+.bg-accented  {
+    background-color: var(--color-gray);
+    height: 2px;
+    cursor: pointer;
+}
+
+.bg-primary {
+    background-color: var(--color-black);
+}
+
+.ring-primary {
+    --tw-ring-color: var(--color-black);
+}
+
+.bg-default {
+    background-color: var(--color-white);
+}
+
+.focus-visible\:outline-primary\/50 {
+    &:focus-visible {
+         outline: none;
+    }
+}
+
+.size-4 {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+    cursor: pointer;
+}

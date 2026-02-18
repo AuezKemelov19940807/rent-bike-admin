@@ -7,10 +7,16 @@ const email = ref('')
 const password = ref('')
 
 const router = useRouter()
+const token = useCookie('token')
+
 
 const login = () => {
-    if (email.value === 'admin@mail.com' && password.value === '123456') {
-        localStorage.setItem('token', 'fake-jwt')
+    // простой временный логин
+    if (email.value.trim() === 'admin@mail.com' && password.value.trim() === '123456') {
+        // сохраняем токен в куки
+        token.value = 'fake-jwt'
+
+        // перенаправляем на главную
         router.push('/')
     } else {
         alert('Неверный логин или пароль')
@@ -20,7 +26,7 @@ const login = () => {
 </script>
 
 <template>
-    <div class="border max-w-md w-full p-5 mx-2 rounded-lg">
+    <div class="border fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-md w-full p-5 mx-2 rounded-lg">
         <form class="" @submit.prevent="login">
             <NuxtLink class="flex items-center  mb-5 justify-center">
                 <span>

@@ -4,6 +4,7 @@ const props = defineProps<{
     options: string[]
     modelValue: string
     widthClass: 'w-1/2' | 'w-1/3'
+    heightClass?: string
 }>();
 
 const emit = defineEmits<{
@@ -21,7 +22,7 @@ const selectOption = (option: string) => {
     <div class="flex flex-col">
         <span class="text-lg mb-2 block">{{ label }}</span>
 
-        <div class="relative border border-gray rounded-full h-10 flex overflow-hidden">
+        <div :class="heightClass" class="relative border border-gray rounded-full flex overflow-hidden">
             <!-- toggle switch -->
             <span class="absolute top-0 left-0 h-full bg-black rounded-full transition-transform duration-300 ease-out"
                 :class="widthClass" :style="{ transform: `translateX(${activeIndex * 100}%)` }" />

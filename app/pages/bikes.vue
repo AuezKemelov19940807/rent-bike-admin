@@ -27,15 +27,19 @@ const goToPage = (page: number) => {
 
 <template>
     <div v-if="!isAdding">
-        <button class="border rounded-full flex px-4 py-3.5 max-w-87.5 w-full justify-between cursor-pointer"
-            @click="isAdding = true">
-            <span>
-                Добавить мотоцикл
-            </span>
-            <span>
-                <img src="~/assets/img/add.svg" alt="Add Icon">
-            </span>
-        </button>
+        <div class="flex items-center justify-between relative">
+            <button class="border rounded-full flex px-4 py-3.5 max-w-87.5 w-full justify-between cursor-pointer"
+                @click="isAdding = true">
+                <span>
+                    Добавить мотоцикл
+                </span>
+                <span>
+                    <img src="~/assets/img/add.svg" alt="Add Icon">
+                </span>
+            </button>
+            <Filter />
+        </div>
+
         <div class="pt-6">
             <Items :current-page="currentPage" :per-page="perPage" :openIsAdding="openIsAdding" />
             <Pagination :current-page="currentPage" :total-pages="totalPages" @page-changed="goToPage" />
@@ -55,7 +59,7 @@ const goToPage = (page: number) => {
 
         </button>
         <div class="pt-6">
-            <Filter :closeIsAdding="closeIsAdding" />
+            <MotorcycleForm :closeIsAdding="closeIsAdding" />
         </div>
     </div>
 </template>

@@ -20,20 +20,24 @@ const statusColor = computed(() => {
 })
 
 const tempDelete = () => {
-    alert(`Фейк удаление: ${props.model}`)
+    const isConfirmed = confirm(`Вы действительно хотите удалить ${props.model}?`)
+
+    if (isConfirmed) {
+        // тут будет реальное удаление
+        console.log('Удаляем:', props.model)
+    }
 }
 
 </script>
 
 <template>
     <div class="overflow-hidden relative   transition-shadow duration-1000">
-        <div class="w-8 h-8 bg-white flex items-center   z-10 justify-center absolute top-2 left-2 rounded-full">
-            <span class="flex items-center justify-center ">
-                <img class="  " :src="icon" alt="Bike Icon">
-            </span>
-        </div>
-
-        <span class="bg-white z-10 absolute flex items-center gap-x-2 px-2 py-1 rounded-full top-3 right-2">
+        <button
+            class="w-10 h-10 rounded-full bg-white  flex items-center justify-center cursor-pointer z-10 absolute right-2 top-2"
+            @click="tempDelete">
+            <img class="w-6 h-6" src="~/assets/img/delete.svg" alt="Delete Icon">
+        </button>
+        <span class="bg-white z-10 absolute flex items-center gap-x-2 px-2 py-1 rounded-full top-2 left-2">
             <span class="text-sm">
                 {{ status }}
             </span>
@@ -47,13 +51,10 @@ const tempDelete = () => {
                 alt="Item Image">
         </div>
         <div class="absolute right-2 bottom-2 flex items-center gap-x-2 ">
-            <button class="w-6 h-6 rounded-full bg-white  flex items-center justify-center cursor-pointer"
-                @click="tempDelete">
-                <img src="~/assets/img/delete.svg" alt="Delete Icon">
-            </button>
-            <button class="w-6 h-6 rounded-full bg-white  flex items-center justify-center cursor-pointer"
+
+            <button class="w-10 h-10 rounded-full bg-white  flex items-center justify-center cursor-pointer"
                 @click="openIsAdding">
-                <img src="~/assets/img/edit.svg" alt="Delete Icon">
+                <img class="w-6 h-6" src="~/assets/img/edit.svg" alt="Delete Icon">
             </button>
         </div>
     </div>

@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <button class="flex cursor-pointer w-full items-center justify-end  gap-x-2 mb-8">
+    <button class="flex cursor-pointer w-full items-center justify-end  gap-x-2">
         <span>
             Фильтр
         </span>

@@ -3,10 +3,10 @@ export default defineNuxtRouteMiddleware((to) => {
   if (to.path === "/login") return;
 
   // Берём токен из cookie
-  const token = useCookie("token").value;
+  const token = useCookie("token");
 
   // Если токена нет — редирект на логин
-  if (!token) {
+  if (!token.value) {
     return navigateTo("/login");
   }
 });

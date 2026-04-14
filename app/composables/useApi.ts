@@ -68,6 +68,8 @@ export const useApi = () => {
       throw error;
     } finally {
       loading.value = false;
+      console.log("API BASE =", config.public.apiBase);
+      console.log("REQUEST URL =", options.url);
     }
   };
 

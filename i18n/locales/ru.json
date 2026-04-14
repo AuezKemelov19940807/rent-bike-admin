@@ -1,3 +1,9 @@
 {
-    "welcome": "Привет, мир!"
+    "welcome": "Привет, мир!",
+    "available": "Свободен",
+    "rented": "Занят",
+    "maintenance": "Сервис",
+    "manual": "МКПП",
+    "automatic": "АКПП",
+    "cvt": "CVT"
 }

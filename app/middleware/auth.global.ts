@@ -1,12 +1,10 @@
 export default defineNuxtRouteMiddleware((to) => {
-  // Пропускаем страницу логина
-  if (to.path === "/login") return;
+  if (to.path === "/login" || to.path === "/register") return;
 
-  // Берём токен из cookie
-  const token = useCookie("token");
+  const token = useCookie("auth_token");
 
-  // Если токена нет — редирект на логин
   if (!token.value) {
+    abortNavigation();
     return navigateTo("/login");
   }
 });

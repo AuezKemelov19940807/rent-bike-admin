@@ -24,7 +24,7 @@ onClickOutside(langDropdownRef, () => {
             </span>
         </div>
         <Transition>
-            <div class="absolute -left-3.5 mt-6 px-4 py-2 bg-white shadow-card rounded-lg 
+            <div class="absolute -left-3.5 z-50 mt-6 px-4 py-2 bg-white shadow-card rounded-lg 
         before:absolute
         before:left-1/2 
         before:-translate-x-1/2

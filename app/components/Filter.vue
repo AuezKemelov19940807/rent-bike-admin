@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 import { useWindowSize } from '@vueuse/core'
+import type { IBrandProps } from '~/utils/types/brand';
+import type { ITypeProps } from '~/utils/types/type';
 const { width, height } = useWindowSize()
 // filter volume range
+
+
+const props = defineProps<{
+    brands: IBrandProps[]
+    types: ITypeProps[]
+}>()
+
+
 const value = ref<[number, number]>([100, 400]);
 const filterWrapperRef = ref<HTMLElement | null>(null)
 // volume label
@@ -76,7 +86,7 @@ const toggleBrand = (name: string) => {
     }
 }
 
-const selectedBrand = ref<typeof brands[number] | null>(null);
+const selectedBrand = ref<typeof props.brands[number] | null>(null);
 
 // выбранные модели
 const selectedModels = ref<string[]>([]);
@@ -87,7 +97,7 @@ function openBrandSection() {
 
 const openedMobileBrandIDs = ref<number[]>([])
 
-function openModelSection(brand: typeof brands[number]) {
+function openModelSection(brand: typeof props.brands[number]) {
     if (width.value >= 768) {
         selectedBrand.value = brand
         activeSection.value = 'model'
@@ -144,7 +154,7 @@ function onBrandClick(brand: any) {
 
 const selectedBrandsWithModelsDetailed = computed(() => {
     return selectedBrands.value.map(brandName => {
-        const brand = brands.find(b => b.name === brandName)
+        const brand = props.brands.find(b => b.name === brandName)
         if (!brand) return { brandName, modelsCount: 0 } // <-- теперь объект всегда
 
         const modelsOfBrand = selectedModels.value.filter(modelName =>
@@ -188,7 +198,7 @@ function openSectionSmart(section: MobileSection) {
 
 const isMobile = computed(() => width.value < 768)
 
-function toggleAllModelsOfBrand(brand: typeof brands[number]) {
+function toggleAllModelsOfBrand(brand: typeof props.brands[number]) {
     const allModelsSelected = brand.models.every(model =>
         selectedModels.value.includes(model.name)
     )
@@ -234,7 +244,8 @@ const allModelsSelected = (brand: any) => {
 
         <!-- filter menu -->
         <Transition>
-            <div class="fixed overflow-y-auto md:absolute md:mt-16 py-4 bg-white px-4 md:px-6 h-full md:h-auto top-0 z-50 right-0  w-full md:shadow-card md:rounded-lg  min-h-91.5 flex flex-col"
+
+            <div class="filter-wrapper fixed max-h-150  overflow-y-auto md:absolute md:mt-16 py-4 bg-white px-4 md:px-6 h-full md:h-auto top-0 z-50 right-0  w-full md:shadow-card md:rounded-lg  min-h-91.5 flex flex-col"
                 v-if="filterButton">
                 <div class="flex-1" v-if="activeSection === 'main'">
                     <div class=" flex  items-center justify-between" @click="toggleFilterButton">
@@ -245,69 +256,11 @@ const allModelsSelected = (brand: any) => {
                     </div>
                     <div class="flex flex-col gap-y-6">
                         <div class="grid md:grid-cols-3 gap-y-6 gap-x-6">
-
-                            <!-- <div class="relative">
-                                <div
-                                    class="flex pb-4 md:pb-0 md:h-12.5 cursor-pointer  justify-between items-center relative after:w-full md:after:w-0.5  after:h-0.5 after:bottom-0 md:after:h-full after:bg-gray after:absolute md:after:-right-2.5">
-                                    <div class="flex w-full items-center justify-between gap-x-4"
-                                        @click="openSectionSmart('company')">
-
-                                        <span class="flex items-center justify-between text-lg w-full md:hidden">
-                                            <span class="font-semibold">
-                                                Компания
-                                            </span>
-                                            <img src="~/assets/img/arrow-bottom.svg" alt="Arrow"
-                                                class="transition-transform duration-300" :class="openedMobileSections.includes('company')
-                                                    ? 'rotate-0'
-                                                    : '-rotate-90'" />
-                                        </span>
-                                        <span class="text-lg hidden md:block">
-                                            <template v-if="selectedCompanies.length">
-                                                <p class="text-sm text-gray-500 md:hidden">Компания</p>
-                                                {{ selectedCompanies.slice(0, 2).join(', ') }}
-                                                <span v-if="selectedCompanies.length > 2" class="text-sm text-gray-500">
-                                                    , +{{ selectedCompanies.length - 2 }} ещё
-                                                </span>
-                                            </template>
-<template v-else>
-                                                Компания
-                                            </template>
-</span>
-<span class="shrink-0 hidden md:block" v-if="selectedCompanies.length" @click.stop="selectedCompanies.length = 0">
-    <img src="~/assets/img/close-filter.svg" alt="Close Filter Icon">
-</span>
-<span class="w-6 h-6  items-center justify-center hidden md:flex" v-else @click="openSectionSmart('company')">
-    <span class="-rotate-90 w-3 h-4 flex items-center justify-center shrink-0">
-        <img src="~/assets/img/arrow-bottom.svg" alt="Arrow" class="w-full h-full object-contain">
-    </span>
-</span>
-
-</div>
-</div>
-<Transition name="collapse">
-    <div v-if="openedMobileSections.includes('company')" class="md:hidden mt-4">
-        <div class="grid md:grid-cols-3 gap-x-8 gap-y-4  companies-grid">
-            <div v-for="company in companies" :key="company.id">
-                <div class="flex items-center justify-between cursor-pointer pb-4 md:pb-0 border-b md:border-none border-[#d1d5db]"
-                    @click="toggleCompany(company.name)">
-                    <span class="text-lg"> {{ company.name }} </span>
-                    <span
-                        class="w-6 h-6 shrink-0 flex items-center justify-center bg-black border border-[#CACACA] rounded-lg"
-                        :class="selectedCompanies.includes(company.name) ? 'bg-black border-black' : 'bg-white border-[#CACACA]'">
-                        <img v-if="selectedCompanies.includes(company.name)" src="~/assets/img/check.svg"
-                            alt="Check Icon" class="">
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</Transition>
-
-</div> -->
+                              
                             <!-- Brand && status && year -->
-                            <div class="relative">
+                            <div class="relative ">
                                 <div
-                                    class="flex pb-4 md:pb-0 md:h-12.5  justify-between items-center relative after:w-full md:after:w-0.5  after:h-0.5 after:bottom-0 md:after:h-full after:bg-gray after:absolute md:after:-right-2.5">
+                                    class="flex  pb-4 md:pb-0 md:h-12.5  justify-between items-center relative after:w-full md:after:w-0.5  after:h-0.5 after:bottom-0 md:after:h-full after:bg-gray after:absolute md:after:-right-2.5">
                                     <div class="flex w-full items-center justify-between gap-x-4  cursor-pointer"
                                         @click="openSectionSmart('brand')">
 
@@ -330,7 +283,8 @@ const allModelsSelected = (brand: any) => {
                                                     :key="item.brandName">
                                                     {{ item.brandName }}
                                                     <span v-if="item.modelsCount > 0" class="text-gray-400 text-[12px]">
-                                                        +{{ item.modelsCount }} {{ item.modelsCount === 1 ? 'модель' :
+                                                        +{{ item.modelsCount }} {{ item.modelsCount === 1 ? 'модель'
+                                                            :
                                                             'модели' }}
                                                     </span>
                                                     <span
@@ -383,10 +337,7 @@ const allModelsSelected = (brand: any) => {
                                                         <img v-if="selectedBrands.includes(brand.name)"
                                                             src="~/assets/img/check.svg" alt="Check Icon" class="">
                                                     </span>
-                                                    <span>
-                                                        <img :src="brand.icon" :alt="brand.name"
-                                                            class="w-5 h-5 flex flex-1 object-contain" />
-                                                    </span>
+
                                                     <span class="text-lg">{{ brand.name }}</span>
                                                 </div>
                                                 <div class="w-6 h-6 flex items-center justify-center">
@@ -676,7 +627,7 @@ const allModelsSelected = (brand: any) => {
                                 <img src="~/assets/img/close.svg" alt="Close Icon">
                             </span>
                         </div>
-                        <div class="grid md:grid-cols-3 gap-x-8 gap-y-4 companies-grid">
+                        <div class="grid md:grid-cols-3 gap-x-8 gap-y-4 companies-grid ">
                             <div v-for="brand in brands" :key="brand.id">
                                 <div class="flex items-center justify-between cursor-pointer pb-4 md:pb-0 border-b md:border-none border-[#d1d5db]"
                                     @click="onBrandClick(brand)">
@@ -687,10 +638,7 @@ const allModelsSelected = (brand: any) => {
                                             <img v-if="selectedBrands.includes(brand.name)" src="~/assets/img/check.svg"
                                                 alt="Check Icon" class="">
                                         </span>
-                                        <span>
-                                            <img :src="brand.icon" :alt="brand.name"
-                                                class="w-5 h-5 flex flex-1 object-contain" />
-                                        </span>
+
                                         <span class="text-lg">{{ brand.name }}</span>
                                     </div>
                                     <div class="w-6 h-6 flex items-center justify-center">
@@ -791,6 +739,8 @@ const allModelsSelected = (brand: any) => {
                     <FilterBtnView class="" text="Готово" @click="openSectionSmart('main')" />
                 </div>
             </div>
+
+
         </Transition>
     </div>
 </template>
@@ -860,5 +810,33 @@ const allModelsSelected = (brand: any) => {
     max-height: 500px;
     /* должно быть больше реальной высоты */
     opacity: 1;
+}
+
+.filter-wrapper::-webkit-scrollbar {
+    width: 4px;
+    /* ширина скролла */
+}
+
+.filter-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* фон дорожки */
+    border-radius: 4px;
+}
+
+.filter-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    /* цвет ползунка */
+    border-radius: 4px;
+}
+
+.filter-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* цвет при наведении */
+}
+
+/* Firefox */
+.filter-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
 }
 </style>

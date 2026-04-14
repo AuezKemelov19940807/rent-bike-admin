@@ -3,9 +3,8 @@ import bikeIconWhite from "@/assets/img/bike-white.svg";
 import profileIcon from "@/assets/img/profile.svg";
 import profileIconWhite from "@/assets/img/profile-white.svg";
 import loginIcon from "@/assets/img/login.svg";
-import type { st } from "vue-router/dist/router-CWoNjPRp.mjs";
 
-interface MenuItem {
+export interface MenuItem {
   id: number;
   name: string;
   icon: string;
@@ -28,12 +27,5 @@ export const menu: MenuItem[] = [
     icon: profileIcon,
     iconWhite: profileIconWhite,
     link: "/profile",
-  },
-  {
-    id: 1,
-    name: "Выйти",
-    icon: loginIcon,
-    iconWhite: profileIconWhite,
-    link: "/login",
   },
 ];

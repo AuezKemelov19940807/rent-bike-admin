@@ -8,7 +8,6 @@ const socialLinks = [
     { id: 1, href: 'https://www.instagram.com/', icon: instagramIcon, alt: 'Instagram' },
     { id: 2, href: 'https://web.telegram.org/', icon: telegramkIcon, alt: 'Telegram' },
     { id: 3, href: 'https://www.whatsapp.com/', icon: whatsappIcon, alt: 'WhatsApp' },
-    { id: 4, href: '#', icon: loginIcon, alt: 'Login' },
 ];
 
 </script>

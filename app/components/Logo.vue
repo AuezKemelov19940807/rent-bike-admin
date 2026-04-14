@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <NuxtLink class="relative z-30" to="/">
+    <NuxtLink class="relative z-30" to="/profile">
         <img src="~/assets/img/logo.svg" alt="Logo">
     </NuxtLink>
 </template>

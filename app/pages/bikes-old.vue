@@ -1,9 +1,22 @@
 <script setup lang="ts">
+import type { IBrandProps } from '~/utils/types/brand';
+import type { ITypeProps } from '~/utils/types/type';
+
 const isAdding = ref(false)
 
 const openIsAdding = () => {
     isAdding.value = true
 }
+
+const config = useRuntimeConfig();
+const { data: brands, error } = await useFetch<IBrandProps[]>("/bikes/catalog", {
+    baseURL: config.public.apiBase,
+});
+
+const { data: types, error: typeError } = await useFetch<ITypeProps[]>("/bikes/types", {
+    baseURL: config.public.apiBase,
+});
+
 
 const closeIsAdding = () => {
     isAdding.value = false
@@ -26,7 +39,8 @@ const goToPage = (page: number) => {
 </script>
 
 <template>
-    <div v-if="!isAdding">
+    <!-- <div v-if="!isAdding">
+
         <div class="flex items-center justify-between relative">
             <button class="border rounded-full flex px-4 py-3.5 max-w-87.5 w-full justify-between cursor-pointer"
                 @click="isAdding = true">
@@ -37,7 +51,7 @@ const goToPage = (page: number) => {
                     <img src="~/assets/img/add.svg" alt="Add Icon">
                 </span>
             </button>
-            <Filter />
+            <Filter v-if="brands && types" :brands="brands" :types="types" />
         </div>
 
         <div class="pt-6">
@@ -56,12 +70,11 @@ const goToPage = (page: number) => {
             <span>
                 Назад
             </span>
-
         </button>
-        <div class="pt-6">
-            <MotorcycleForm :closeIsAdding="closeIsAdding" />
+        <div class="pt-6" v-if="brands && types">
+            <AddMotorcycleForm :closeIsAdding="closeIsAdding" :brands="brands" :types="types" />
         </div>
-    </div>
+    </div> -->
 </template>
 
 <style scoped lang="css"></style>

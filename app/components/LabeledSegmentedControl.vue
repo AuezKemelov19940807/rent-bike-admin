@@ -28,10 +28,10 @@ const selectOption = (option: string) => {
                 :class="widthClass" :style="{ transform: `translateX(${activeIndex * 100}%)` }" />
 
             <!-- buttons -->
-            <button v-for="option in options" :key="option" @click="selectOption(option)"
+            <button type="button" v-for="option in options" :key="option" @click="selectOption(option)"
                 class="relative z-10 cursor-pointer text-sm 2xl:text-base text-center transition-colors duration-300"
                 :class="[widthClass, modelValue === option ? 'text-white' : 'text-black']">
-                {{ option }}
+                {{ $t(option) }}
             </button>
         </div>
     </div>

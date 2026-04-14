@@ -1,3 +1,9 @@
 {
-    "welcome": "Hello world!"
+    "welcome": "Hello world!",
+    "available": "avail",
+    "rented": "rented",
+    "maintenance": "maint",
+    "manual": "manual",
+    "automatic": "auto",
+    "cvt": "cvt"
 }

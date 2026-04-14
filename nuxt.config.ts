@@ -2,6 +2,11 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_BASE_URL,
+    },
+  },
   css: ["@/assets/css/main.css"],
 
   vite: {
@@ -16,5 +21,24 @@ export default defineNuxtConfig({
     ],
     langDir: "locales/",
   },
-  modules: ["@nuxtjs/i18n", "@vueuse/nuxt", "@nuxt/ui", "nuxt-anchorscroll"],
+
+  toast: {
+    settings: {
+      rtl: true, // Right-to-left support
+      position: "topRight", // Default position
+      timeout: 2000, // Default timeout
+      closeOnEscape: true, // Close on ESC key
+      closeOnClick: true, // Close on click
+      pauseOnHover: true, // Pause on hover
+      // ... and many more options
+    },
+  },
+
+  modules: [
+    "@nuxtjs/i18n",
+    "@vueuse/nuxt",
+    "@nuxt/ui",
+    "nuxt-anchorscroll",
+    "nuxt-toast",
+  ],
 });

@@ -1,90 +1,46 @@
 <script setup lang="ts">
-const preview = ref<string | null>(null)
-const fileName = ref<string | null>(null)
-const fileInput = ref<HTMLInputElement | null>(null)
+import Error from '~/error.vue';
+const {
+    profile,
+    error,
+    pending,
+    loading,
 
-const displayName = computed(() => fileName.value || 'Выберите файл')
+    phone,
+    whats,
+    telegram,
 
-const handleFileChange = (event: Event) => {
-    const target = event.target as HTMLInputElement
-    const file = target.files?.[0]
+    preview,
+    fileName,
 
-    if (file) {
-        preview.value = URL.createObjectURL(file)
-        fileName.value = file.name
-    }
-}
-
-const clearFile = () => {
-    preview.value = null
-    fileName.value = null
-
-    if (fileInput.value) {
-        fileInput.value.value = '' // сброс input
-    }
-}
+    handleFileChange,
+    edit,
+    isChanged,
+} = useProfile()
 </script>
 
 <template>
-    <div class="flex flex-col w-full lg:flex-row  gap-x-10">
-        <div class="flex flex-col gap-y-2 max-w-65 mb-6 w-full relative">
-            <h4 class="text-lg font-semibold">Логотип</h4>
+    <div class="flex flex-col h-full w-full lg:flex-row gap-x-10">
+        <template v-if="profile">
 
-            <!-- Скрытый input -->
-            <input id="logoUpload" ref="fileInput" class="hidden" type="file" accept="image/*"
-                @change="handleFileChange" />
-
-            <!-- Label-триггер с текстом -->
-            <label for="logoUpload"
-                class="border border-gray-300 py-2.5 px-4 rounded-lg cursor-pointer flex items-center justify-between overflow-hidden">
-                <span class="text-gray-700 truncate flex-1">{{ displayName }}</span>
-            </label>
-
-            <!-- Кнопка удаления (вне label, чтобы не срабатывало открытие файла) -->
-            <button v-if="preview" type="button"
-                class="absolute right-1 top-12 w-5 h-5 flex items-center justify-center cursor-pointer z-10"
-                @click="clearFile">
-                <img src="~/assets/img/close.svg" alt="Delete" class="w-4 h-4" />
-            </button>
-
-            <!-- Превью картинки -->
-            <div v-if="preview" class="flex items-center justify-center mt-2">
-                <img class="max-w-65 max-h-65 rounded" :src="preview" alt="Profile Logo" />
+            <div class="w-full">
+                <div class="flex w-full flex-col sm:flex-row gap-x-5 md:gap-x-10">
+                    <ProfileFileUpload class="flex-1" :handle-file-change="handleFileChange" :file-name="fileName"
+                        :profile-logo="profile.logo" :preview="preview" />
+                    <ProfileForm class="flex-1" v-model:phone="phone" v-model:whats="whats"
+                        v-model:telegram="telegram" />
+                </div>
+                <ProfileSaveBtn v-if="isChanged" :edit="edit" :loading="loading" />
             </div>
-        </div>
-
-
-        <div class="w-full flex flex-col gap-y-6">
-            <label class="flex flex-col gap-y-2 w-full" for="Description">
-                <span class="text-lg font-semibold">
-                    Описание
-                </span>
-                <textarea class="w-full border h-30 resize-none border-gray-300 py-2.5 px-4 rounded-lg" type="text"
-                    placeholder="Описание" />
-            </label>
-            <label class="flex flex-col gap-y-2 w-full" for="Phone">
-                <span class="text-lg font-semibold">
-                    Телефон
-                </span>
-                <input class="w-full border border-gray-300 py-2.5 px-4 rounded-lg" type="text"
-                    placeholder="+ 7 747 7777 777" />
-            </label>
-            <label class="flex flex-col gap-y-2 w-full" for="WhatsApp">
-                <span class="text-lg font-semibold">
-                    WhatsApp
-                </span>
-                <input class="w-full border border-gray-300 py-2.5 px-4 rounded-lg" type="text"
-                    placeholder="https://wa.me/username" />
-            </label>
-            <label class="flex flex-col gap-y-2 w-full" for="Telegram">
-                <span class="text-lg font-semibold">
-                    Telegram
-                </span>
-                <input class="w-full border border-gray-300 py-2.5 px-4 rounded-lg" type="text"
-                    placeholder="https://t.me/username" />
-            </label>
-        </div>
-
+        </template>
+        <template v-if="pending">
+            <div class="flex items-center gap-y-5 flex-col justify-center w-full h-full">
+                <img class="animate-spin" src="~/assets/img/progress-black.svg" alt="Loading">
+            </div>
+        </template>
+        <template v-else-if="error">
+            <Error :error="error" />
+        </template>
     </div>
 </template>
 

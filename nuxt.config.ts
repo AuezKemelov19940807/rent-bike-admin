@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL,
+      apiBase:
+        process.env.API_BASE_URL || "https://rent-bike-api.fly.dev/api/v1",
     },
   },
   css: ["@/assets/css/main.css"],

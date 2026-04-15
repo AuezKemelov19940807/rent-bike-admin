@@ -24,7 +24,7 @@ const statusColor = computed(() => {
 </script>
 
 <template>
-    <div class="overflow-hidden relative h-full min-h-60   transition-shadow duration-1000">
+    <div class="overflow-hidden relative h-full pb-[80%]   transition-shadow duration-1000">
         <button
             class="w-10 h-10 rounded-full bg-white  flex items-center justify-center cursor-pointer z-10 absolute right-2 top-2"
             @click="deleteMotoWithID(id)">
@@ -43,7 +43,7 @@ const statusColor = computed(() => {
             </span>
             {{ model }}
         </p>
-        <div class="w-full h-full">
+        <div class="w-full absolute left-0 top-0 h-full">
             <img class="object-cover rounded-lg w-full  transition-all duration-1000 h-full " :src="image"
                 alt="Item Image">
         </div>
